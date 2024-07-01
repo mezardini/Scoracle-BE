@@ -10,4 +10,4 @@ class Prediction(models.Model):
     date = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return 'Predictions of ' + str(self.league_name) + str(self.date)
+        return 'Predictions of '  + str(self.date)
