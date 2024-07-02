@@ -29,9 +29,9 @@ SECRET_KEY = env('SECRET_KEY')
 AUTH_USER_MODEL = "users.CustomUser"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -62,7 +62,7 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:5500',
+    'scoracle-predict.vercel.app',
     'http://localhost:3000'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -105,8 +105,12 @@ WSGI_APPLICATION = 'Scoracle_BE.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('NAME'),
+        'PASSWORD': env('PASSWORD'),
+        'HOST': env('HOST'),
+        'PORT': 5432,
+        'USER': env('USER'),
     }
 }
 
