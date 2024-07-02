@@ -29,7 +29,7 @@ SECRET_KEY = env('SECRET_KEY')
 AUTH_USER_MODEL = "users.CustomUser"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -105,11 +105,11 @@ WSGI_APPLICATION = 'Scoracle_BE.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('NAME'),
         'PASSWORD': env('PASSWORD'),
         'HOST': env('HOST'),
-        'PORT': 5432,
+        'PORT': 6543,
         'USER': env('USER'),
     }
 }
