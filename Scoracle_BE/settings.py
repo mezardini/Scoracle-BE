@@ -62,7 +62,7 @@ MIDDLEWARE = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    'https://scoracle-predict.vercel.app/',
+    'https://scoracle-predict.vercel.app',
     'http://localhost:3000'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
