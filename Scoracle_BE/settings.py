@@ -29,9 +29,10 @@ SECRET_KEY = env('SECRET_KEY')
 AUTH_USER_MODEL = "users.CustomUser"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["web-dhx5ovj5jdys.up-de-fra1-k8s-1.apps.run-on-seenode.com", '127.0.0.1']
+ALLOWED_HOSTS = [
+    "web-dhx5ovj5jdys.up-de-fra1-k8s-1.apps.run-on-seenode.com", '127.0.0.1']
 
 
 INTERNAL_IPS = ['127.0.0.1',]
@@ -142,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://web-dhx5ovj5jdys.up-de-fra1-k8s-1.apps.run-on-seenode.com:6379/",
+        "LOCATION":  env('REDIS_URL'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
