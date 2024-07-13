@@ -20,6 +20,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from .utils import fetch_data, calculate_poisson_probs, predict_match_result, get_top_probable_scorelines
 from rest_framework.views import APIView
+from django.core.cache import cache
+
 
 # In-memory storage for league data
 league_data = {}
@@ -145,9 +147,19 @@ class GeneralPrediction(APIView):
     def get(self, request):
         current_datetime = date.today()
 
+        cache_key = f'general_prediction_{current_datetime}'
+
+        # Check if the response is already cached
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return Response(cached_response, status=status.HTTP_200_OK)
+
         if LP.objects.filter(date=current_datetime).exists():
             response = LP.objects.get(date=current_datetime).content
+
+            cache.set(cache_key, response, timeout=24*60*60)  # Cache for 24 hours
             return Response(response, status=status.HTTP_200_OK)
+            
 
         else:
             base_url = 'https://www.soccerstats.com/'
@@ -260,6 +272,7 @@ class GeneralPrediction(APIView):
                 # Store predictions in the database
                 predictionx = LP.objects.create(content=all_response_data)
                 predictionx.save()
+                cache.set(cache_key, all_response_data, timeout=24*60*60)
 
                 return Response(all_response_data, status=status.HTTP_200_OK)
 
@@ -277,6 +290,7 @@ class LeaguePrediction(APIView):
         base_url = 'https://www.soccerstats.com/'
         urlavgtable = f'https://www.soccerstats.com/table.asp?league={league}&tid=d'
         urlfixture = f'https://www.soccerstats.com/latest.asp?league={league}'
+
 
         try:
             # Fetch league table data
