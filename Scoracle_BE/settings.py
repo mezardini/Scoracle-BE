@@ -32,7 +32,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "web-dhx5ovj5jdys.up-de-fra1-k8s-1.apps.run-on-seenode.com", '127.0.0.1']
+    "web-dhx5ovj5jdys.up-de-fra1-k8s-1.apps.run-on-seenode.com", '127.0.0.1', 'scoracle.fly.dev', 'scoracle.onrender.com']
 
 
 INTERNAL_IPS = ['127.0.0.1',]
@@ -69,7 +69,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://scoracle-predict.vercel.app',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://scoracle.fly.dev',
+    'https://scoracle.onrender.com/'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = [
@@ -120,6 +122,12 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -140,15 +148,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION":  env('REDIS_URL'),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION":  env('REDIS_URL'),
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         },
+#     }
+# }
 
 
 # Internationalization
