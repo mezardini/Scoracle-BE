@@ -147,19 +147,18 @@ class GeneralPrediction(APIView):
     def get(self, request):
         current_datetime = date.today()
 
-        cache_key = f'general_prediction_{current_datetime}'
+        # cache_key = f'general_prediction_{current_datetime}'
 
-        # Check if the response is already cached
-        cached_response = cache.get(cache_key)
-        if cached_response:
-            return Response(cached_response, status=status.HTTP_200_OK)
+        # # Check if the response is already cached
+        # cached_response = cache.get(cache_key)
+        # if cached_response:
+        #     return Response(cached_response, status=status.HTTP_200_OK)
 
         if LP.objects.filter(date=current_datetime).exists():
             response = LP.objects.get(date=current_datetime).content
 
-            cache.set(cache_key, response, timeout=24*60*60)  # Cache for 24 hours
+            # cache.set(cache_key, response, timeout=24*60*60)  # Cache for 24 hours
             return Response(response, status=status.HTTP_200_OK)
-            
 
         else:
             base_url = 'https://www.soccerstats.com/'
@@ -176,11 +175,12 @@ class GeneralPrediction(APIView):
                 countries_to_check = [
                     'spain', 'england', 'italy', 'france', 'germany', 'germany2', 'norway', 'norway2', 'iceland', 'sweden', 'sweden2', 'portugal', 'netherlands', 'netherlands2',
                     'russia', 'belgium', 'turkey', 'ukraine', 'faroeislands', 'czechrepublic', 'austria', 'switzerland', 'greece', 'scotland', 'croatia',
-                    'denmark', 'poland', 'spain2', 'england2', 'italy2', 'france2', 'armenia', 'belarus', 'brazil', 'china', 'japan', 'southkorea', 'estonia',
+                    'denmark', 'poland', 'spain2', 'england2', 'italy2', 'france2', 'armenia',
+                    'belarus', 'brazil', 'china', 'japan', 'southkorea', 'estonia',
                     'georgia', 'ireland', 'kazakhstan', 'latvia', 'lithuania', 'moldova', 'wales', 'vietnam', 'kazakhstan', 'finland'
                 ]
                 unique_alt_texts = {row.find('td').get(
-                    'sorttable_customkey', '') for row in rows if row.get('height') == '34'}
+                    'sorttable_customkey', '') for row in rows if row.get('height') == '36'}
                 available_countries = [
                     country for country in countries_to_check if country in unique_alt_texts]
 
@@ -195,9 +195,11 @@ class GeneralPrediction(APIView):
 
                     table = avgtable_soup.find("table", {"id": 'btable'})
                     header = [h.text.strip() for h in table.find_all("th")]
-                    rows = [row.find_all('td') for row in table.find_all("tr")[1:]]
+                    rows = [row.find_all('td')
+                            for row in table.find_all("tr")[1:]]
                     league_data = {'header': header, 'rows': [
                         [col.text.strip() for col in row] for row in rows[1:]]}
+                    # print(league_data)
 
                     # Fetch data for fixture list and predictions
                     fixture_url = f'{base_url}latest.asp?league={league}'
@@ -211,6 +213,7 @@ class GeneralPrediction(APIView):
 
                     # Extract teams and other information
                     teams = [row[0] for row in league_data['rows']]
+                    # print(teams)
                     home_avg = away_avg = 100.000
                     table = fixture_soup.find(
                         "table", style="margin-left:14px;margin-riht:14px;border:1px solid #aaaaaa;border-radius:12px;overflow:hidden;")
@@ -228,7 +231,8 @@ class GeneralPrediction(APIView):
 
                             home_index, away_index = teams.index(
                                 first_item), teams.index(second_item)
-                            row_list, row_list_away = league_data['rows'][home_index], league_data['rows'][away_index]
+                            row_list, row_list_away = league_data['rows'][
+                                home_index], league_data['rows'][away_index]
 
                             H1, H2 = float(
                                 row_list[6]) / home_avg, float(row_list_away[11]) / home_avg
@@ -268,17 +272,18 @@ class GeneralPrediction(APIView):
                                 # 'away_win_prob': away_win_prob,
                             }
                             all_response_data.append(response_data)
+                            print(all_response_data)
 
                 # Store predictions in the database
                 predictionx = LP.objects.create(content=all_response_data)
                 predictionx.save()
-                cache.set(cache_key, all_response_data, timeout=24*60*60)
+                # cache.set(cache_key, all_response_data, timeout=24*60*60)
 
                 return Response(all_response_data, status=status.HTTP_200_OK)
 
             except Exception as e:
                 return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
 
 class LeaguePrediction(APIView):
 
@@ -290,7 +295,6 @@ class LeaguePrediction(APIView):
         base_url = 'https://www.soccerstats.com/'
         urlavgtable = f'https://www.soccerstats.com/table.asp?league={league}&tid=d'
         urlfixture = f'https://www.soccerstats.com/latest.asp?league={league}'
-
 
         try:
             # Fetch league table data
