@@ -71,7 +71,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://scoracle-predict.vercel.app',
     'http://localhost:3000',
     'https://scoracle.fly.dev',
-    'https://scoracle.onrender.com/'
+    'https://scoracle.onrender.com'
 ]
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = [
